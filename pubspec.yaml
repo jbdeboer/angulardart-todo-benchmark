@@ -1,0 +1,7 @@
+name: angular_dart_todo_benchmark
+version: 0.0.1
+dependencies:
+  angular: any
+  browser: any
+  unittest: any
+  benchmark_harness: any

@@ -9,7 +9,7 @@ class Item {
 
   Item([String this.text = '', bool this.done = false]);
 
-  bool get isEmpty => text.isEmpty;
+  bool get isEmpty => text == null || text.isEmpty;
 
   clone() => new Item(text, done);
 

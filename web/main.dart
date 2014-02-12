@@ -22,7 +22,9 @@ class TodoBenchmark extends BenchmarkBase {
   NgZone _zone;
 
   // Run a single Angular expression inside of the Angular Zone.
-  void eval(String exp) => _zone.run(() => _scope.$eval(exp));
+  void eval(String exp) {
+    _zone.run(() => _scope.$eval(exp));
+  }
 
   // Run all the expressions.
   void run() => _evalCmds.forEach(eval);

@@ -4,10 +4,10 @@ import 'package:angular/angular.dart';
 
 
 class Item {
-  String text;
+  var text;
   bool done;
 
-  Item([String this.text = '', bool this.done = false]);
+  Item([this.text = '', bool this.done = false]);
 
   bool get isEmpty => text == null || text.isEmpty;
 

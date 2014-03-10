@@ -23,17 +23,26 @@ class TodoBenchmark extends BenchmarkBase {
 
   // Run a single Angular expression inside of the Angular Zone.
   void eval(String exp) {
-    _zone.run(() => _scope.$eval(exp));
+    _zone.run(() => _scope.eval(exp));
   }
 
   // Run all the expressions.
   void run() => _evalCmds.forEach(eval);
 
   void setup() {
+    var getterCache = new GetterCache({
+      "done" : (o) => o.done,
+      "length" : (o) => o.length,
+      "items" : (o) => o.items,
+      "text" : (o) => o.text,
+      "newItem" : (o) => o.newItem,
+      "isEmpty" : (o) => o.isEmpty
+    });
     var module = new Module()
       ..type(TodoController)
       ..type(PlaybackHttpBackendConfig)
-      ..type(ServerController, implementedBy: NoServerController);
+      ..type(ServerController, implementedBy: NoServerController)
+      ..value(GetterCache, getterCache);
 
     var injector = ngBootstrap(module:module);
     _zone = injector.get(NgZone);
@@ -72,6 +81,7 @@ main() {
       rAFCallback = (timer) {
         var cmd = evalCmds[cmdPos++];
         if (cmdPos == cmdLen) cmdPos = 0;
+
 
         benchmark.eval(cmd);
         // Add a tick to the console so we know which expression

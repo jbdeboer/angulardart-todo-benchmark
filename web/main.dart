@@ -115,8 +115,10 @@ import 'dart:html';
 
 
 class ViewBenchmark extends BenchmarkBase {
-  ViewBenchmark() : super("ViewBenchmark");
+  ViewBenchmark(this.numDirs, this.numElements) : super("ViewBenchmark");
 
+  num numDirs;
+  num numElements;
   Injector _injector;
   Compiler _compiler;
   DirectiveMap _dm;
@@ -130,10 +132,11 @@ class ViewBenchmark extends BenchmarkBase {
   // Run a single Angular expression inside of the Angular Zone.
   void eval(String exp) {
     _zone.run(() {
-      var elt = document.body;
-      elt.setInnerHtml('nope', treeSanitizer: _ts);
-      _scope.context['x'] = 0;
-      _viewFactory(_injector).nodes.forEach((n) => elt.append(n));
+    var elt = document.createElement('div');
+    elt.setInnerHtml(html, treeSanitizer: _ts);
+    _compiler([elt], _dm);
+    document.body.setInnerHtml('yep directives:$numDirs elements:$numElements', treeSanitizer: _ts);
+
 
     });
   }
@@ -145,13 +148,13 @@ class ViewBenchmark extends BenchmarkBase {
 
     var htmlBits = [];
     htmlBits.add('<span');
-    for (var i = 1; i <= 100; i++) {
+    for (var i = 1; i <= numDirs; i++) {
       htmlBits.add('d$i');
     }
     htmlBits.add('>- {{x}} - </span>');
     var once = htmlBits.join(' ');
     var all = [];
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < numElements; i++) {
       all.add(once);
     }
     html = all.join('');
@@ -271,9 +274,6 @@ class ViewBenchmark extends BenchmarkBase {
     _compiler = injector.get(Compiler);
     _scope = injector.get(Scope);
 
-    var elt = document.createElement('div');
-    elt.setInnerHtml(html, treeSanitizer: _ts);
-    _viewFactory = _compiler([elt], _dm);
 
   }
 
@@ -282,27 +282,17 @@ class ViewBenchmark extends BenchmarkBase {
 
 // Main function runs the benchmark.
 main() {
-  var evalCmds = [
-    'todo.markAllDone()',
-    'todo.archiveDone()'
-  ];
-  var NUM_ITEMS = 20;
-  
-  // Add 20 items
-  for (var i = 0; i < NUM_ITEMS; i++) {
-    evalCmds.add('todo.newItem.text="item $i"');
-    evalCmds.add('todo.add()');
-  }
-  // Check off each item from item 19 to item 0.
-  for (var i = NUM_ITEMS - 1; i >= 0; i--) {
-    evalCmds.add('todo.items[$i].done=true');
-  }
+ var query = window.location.search;
+  var args = query.split(',');
 
-  var benchmark = new ViewBenchmark();
+  var numElements = args.length > 2 ? int.parse(args[2]) : 30;
+  var numDirs = args.length > 1 ? int.parse(args[1]) : 30;
 
+  var benchmark = new ViewBenchmark(numDirs, numElements);
+
+  evalCmds = ['a', 'b'];
   // Use the continuous animated runner if for '?show'
-  var query = window.location.search;
-  if (query == '?show') {
+  if (args.length > 0 && args[0] == '?show') {
       benchmark.setup();
       var cmdPos = 0;
       var cmdLen = evalCmds.length;

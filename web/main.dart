@@ -126,17 +126,26 @@ class ViewBenchmark extends BenchmarkBase {
   Scope _scope;
   var _ts;
   var _viewFactory;
+  var _linkArgs;
 
   var html;
 
   // Run a single Angular expression inside of the Angular Zone.
   void eval(String exp) {
     _zone.run(() {
+
+    var elt = document.body;
+    //elt.setInnerHtml('nope', treeSanitizer: _ts);
+    _scope.context['x'] = 0;
+    _linkArgs = _viewFactory.callPart1(_injector);
+    _viewFactory.callPart2(_linkArgs).nodes.forEach((n) => elt.append(n));
+
+/*
     var elt = document.createElement('div');
     elt.setInnerHtml(html, treeSanitizer: _ts);
     _compiler([elt], _dm);
     document.body.setInnerHtml('yep directives:$numDirs elements:$numElements', treeSanitizer: _ts);
-
+*/
 
     });
   }
@@ -274,6 +283,12 @@ class ViewBenchmark extends BenchmarkBase {
     _compiler = injector.get(Compiler);
     _scope = injector.get(Scope);
 
+    var elt = document.createElement('div');
+    elt.setInnerHtml(html, treeSanitizer: _ts);
+    _viewFactory = _compiler([elt], _dm);
+    _scope.context['x'] = 0;
+    //_linkArgs = _viewFactory.callPart1(_injector);
+
 
   }
 
@@ -290,7 +305,7 @@ main() {
 
   var benchmark = new ViewBenchmark(numDirs, numElements);
 
-  evalCmds = ['a', 'b'];
+  var evalCmds = ['a', 'b'];
   // Use the continuous animated runner if for '?show'
   if (args.length > 0 && args[0] == '?show') {
       benchmark.setup();

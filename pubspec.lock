@@ -37,8 +37,8 @@ packages:
     version: "0.9.1"
   di:
     description:
-      path: "/home/deboer/github/dart-di"
-      relative: false
+      path: "../dart-di"
+      relative: true
     source: path
     version: "0.0.35"
   html5lib:

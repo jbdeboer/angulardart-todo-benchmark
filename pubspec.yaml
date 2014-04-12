@@ -3,6 +3,8 @@ version: 0.0.1
 dependencies:
   angular:
     path: ../angular-dart
+  di:
+    path: ../dart-di
   browser: any
   unittest: any
   benchmark_harness: any

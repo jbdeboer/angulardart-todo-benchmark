@@ -1,7 +1,7 @@
 import 'package:di/di.dart';
 import 'package:angular/angular.dart';
 import 'package:angular/core_dom/module_internal.dart';
-import 'package:angular/angular_dynamic.dart';
+import 'package:angular/application_factory.dart';
 
 import 'package:benchmark_harness/benchmark_harness.dart';
 
@@ -128,17 +128,43 @@ class ViewBenchmark extends BenchmarkBase {
   var _viewFactory;
   var _linkArgs;
 
+  var _baseNum = 0;
+
   var html;
+
+  var createDirectives = (binder, injector) {
+    //print("createDirecitve");
+    var dRefs = binder.directiveRefs;
+    if (dRefs.length == 1) {
+       return [[dRefs[0], null]];
+    }
+    if (dRefs.length != 10) throw ["gah", dRefs.length, dRefs];
+
+    var scope = injector.get(Scope);
+    return [
+      [dRefs[0], new Dir1(scope)],
+      [dRefs[1], new Dir2(scope)],
+      [dRefs[2], new Dir3(scope)],
+      [dRefs[3], new Dir4(scope)],
+      [dRefs[4], new Dir5(scope)],
+      [dRefs[5], new Dir6(scope)],
+      [dRefs[6], new Dir7(scope)],
+      [dRefs[7], new Dir8(scope)],
+      [dRefs[8], new Dir9(scope)],
+      [dRefs[9], new Dir10(scope)]
+
+    ];
+  };
 
   // Run a single Angular expression inside of the Angular Zone.
   void eval(String exp) {
     _zone.run(() {
 
     var elt = document.body;
-    //elt.setInnerHtml('nope', treeSanitizer: _ts);
-    _scope.context['x'] = 0;
-    _linkArgs = _viewFactory.callPart1(_injector);
-    _viewFactory.callPart2(_linkArgs).nodes.forEach((n) => elt.append(n));
+
+    elt.setInnerHtml('nope', treeSanitizer: _ts);
+    _scope.context['x'] = _baseNum++;
+    _viewFactory.call(_injector).nodes.forEach((n) => elt.append(n));
 
 /*
     var elt = document.createElement('div');
@@ -272,10 +298,9 @@ class ViewBenchmark extends BenchmarkBase {
 
     ;
     
-    var app = dynamicApplication();
-    app.addModule(module);
+    
 
-    var injector = app.run();
+    var injector = applicationFactory().addModule(module).run();
     _injector = injector;
     _zone = injector.get(NgZone);
     _dm = injector.get(DirectiveMap);
@@ -305,6 +330,7 @@ main() {
 
   var benchmark = new ViewBenchmark(numDirs, numElements);
 
+  
   var evalCmds = ['a', 'b'];
   // Use the continuous animated runner if for '?show'
   if (args.length > 0 && args[0] == '?show') {

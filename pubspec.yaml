@@ -10,7 +10,6 @@ dependencies:
   benchmark_harness: any
 
 transformers:
-- angular
 - $dart2js:
     minify: false
     checked: false

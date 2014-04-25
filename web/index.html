@@ -1,10 +1,7 @@
 <html>
 <head>
    <title>INFOSTRING</title>
-<script>
-  var benchmarkSteps = [];
-</script>
-
+    <script src="../../../io/bp/bp.js"></script>
     <script src="main.dart" type="application/dart"></script>
     <script src="packages/browser/dart.js"></script>
     <script src="packages/browser/interop.js"></script>
@@ -12,53 +9,10 @@
 
 <body ng-app>
   <div id="benchmarkContainer"></div>
+  <p>
+  Render a 2^9 prefix tree with AngularDart
+  </p>
 
   <tree data=initData></tree>
-
-
-   <script>
-  // Benchmark runner
-  var btn = document.createElement('button');
-  btn.innerText = "Pause";
-  var running = false;
-  btn.addEventListener('click', toggleBenchmark);
-  var container = document.querySelector('#benchmarkContainer');
-  container.appendChild(btn);
-
-  var infoDiv = document.createElement('div');
-  container.appendChild(infoDiv);
-
-  function toggleBenchmark() {
-    if (running) {
-      btn.innerText = "Go";
-      running = false;
-    } else {
-      btn.innerHtml = "Pause";
-      running = true;
-      window.requestAnimationFrame(runBenchmarkSteps);
-    }
-  }
-
-  var runBenchmarkSteps;
-  runBenchmarkSteps = function() {
-    if (!running) return;
-    // Run all the steps;
-    var times = [];
-    benchmarkSteps.forEach(function(bs) {
-      var startTime = window.performance.now();
-      bs.fn();
-      var delta = window.performance.now() - startTime;
-      times.push(bs.name + ':' + ('' + delta).substr(0,5));
-    });
-    infoDiv.innerText = times.join(' ');
-
-    //console.log('hello');
-    window.requestAnimationFrame(runBenchmarkSteps);
-  }
-  toggleBenchmark();
-
-  </script>
-
-  </body> 
-
+</body> 
 </html>

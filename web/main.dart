@@ -24,10 +24,6 @@ class TreeComponenet {
 
 }
 
-
-
-
-
 class ViewBenchmark extends BenchmarkBase {
   ViewBenchmark(this.numDirs, this.numElements) : super("ViewBenchmark");
 
@@ -100,12 +96,12 @@ class ViewBenchmark extends BenchmarkBase {
         _scope.context['initData'] = {};
       });
 
+      var count = 0;
       createDom = (_) => _zone.run(() {
         var maxDepth = 9;
-        var values = [];
-        for (var i = 0; i < maxDepth; i++) {
-          values.add(new Random().nextBool() ? '|' : '-');
-        }
+        var values = count++ % 2 == 0 ?
+            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*'] :
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', '-'];
         _scope.context['initData'] = buildTree(maxDepth, values, 0);
 
       });

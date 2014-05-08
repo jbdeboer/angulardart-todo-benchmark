@@ -10,15 +10,24 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:js' as js;
 
-/* Gen 100 different directives */
+
 @Component(
-  selector: 'tree',
-  template: '<span> {{ctrl.data.value}}'
-  '<span ng-if="ctrl.data.right != null"><tree data=ctrl.data.right></span>'
-  '<span ng-if="ctrl.data.left != null"><tree data=ctrl.data.left></span>'
-  '</span>',
+  selector: 'comp',
+  templateUrl: 'comp.html',
+  cssUrl: 'comp.css',
   publishAs: 'ctrl')
 class TreeComponenet {
+  @NgTwoWay('data')
+  var data;
+
+}
+
+@Component(
+  selector: 'boot-comp',
+  templateUrl: 'comp.html',
+  cssUrl: const ['bootstrap.css', 'comp.css'],
+  publishAs: 'ctrl')
+class Bootstrap {
   @NgTwoWay('data')
   var data;
 
@@ -60,6 +69,7 @@ class ViewBenchmark extends BenchmarkBase {
     
     var module = new Module()
       ..type(TreeComponenet)
+      ..type(Bootstrap)
       
     ;
     
@@ -73,36 +83,21 @@ class ViewBenchmark extends BenchmarkBase {
     _compiler = injector.get(Compiler);
     _scope = injector.get(Scope);
 
-    _scope.context['initData'] = {
-      "value": "top",
-      "right": {
-        "value": "right"
-      },
-      "left": {
-        "value": "left"
-      }
-    };
+    _scope.context['components'] = ['Hello'];
 
-    buildTree(maxDepth, values, curDepth) {
-      if (maxDepth == curDepth) return {};
-      return {
-        "value": values[curDepth],
-        "right": buildTree(maxDepth, values, curDepth+1),
-        "left": buildTree(maxDepth, values, curDepth+1)
-         
-      };
-    }
+   
       cleanup = (_) => _zone.run(() {
-        _scope.context['initData'] = {};
+        _scope.context['components'] = [];
       });
 
       var count = 0;
       createDom = (_) => _zone.run(() {
         var maxDepth = 9;
-        var values = count++ % 2 == 0 ?
-            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*'] :
-            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', '-'];
-        _scope.context['initData'] = buildTree(maxDepth, values, 0);
+        var values = [];
+        for (var i = 0; i < 100; i++) {
+          values.add('C$i');
+        }
+        _scope.context['components'] = values;
 
       });
 

@@ -4,13 +4,13 @@ packages:
   analyzer:
     description: analyzer
     source: hosted
-    version: "0.13.5"
+    version: "0.13.6"
   angular:
     description:
       path: "../angular-dart"
       relative: true
     source: path
-    version: "0.9.10"
+    version: "0.10.0"
   args:
     description: args
     source: hosted
@@ -36,11 +36,9 @@ packages:
     source: hosted
     version: "0.9.1"
   di:
-    description:
-      path: "../dart-di"
-      relative: true
-    source: path
-    version: "0.0.35"
+    description: di
+    source: hosted
+    version: "0.0.38"
   html5lib:
     description: html5lib
     source: hosted
@@ -72,7 +70,7 @@ packages:
   route_hierarchical:
     description: route_hierarchical
     source: hosted
-    version: "0.4.18"
+    version: "0.4.19"
   shadow_dom:
     description: shadow_dom
     source: hosted

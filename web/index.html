@@ -1,7 +1,7 @@
 <html>
 <head>
    <title>INFOSTRING</title>
-    <script src="../../../io/bp/bp.js"></script>
+    <script src="bp.js"></script>
     <script src="main.dart" type="application/dart"></script>
     <script src="packages/browser/dart.js"></script>
     <script src="packages/browser/interop.js"></script>
@@ -10,9 +10,24 @@
 <body ng-app>
   <div id="benchmarkContainer"></div>
   <p>
-  Render a 2^9 prefix tree with AngularDart
+  Render a list of components.
   </p>
 
-  <tree data=initData></tree>
+  <div>These two options do not mix</div>
+  <div>Use BaseCSS: <input type=checkbox ng-model=useBaseCss></div>
+  <div>Use builtin bootstrap <input type=checkbox ng-model=useBootstrap></div>
+
+  <div ng-if=useBaseCss ng-base-css="bootstrap.css">
+    <div ng-repeat="x in components track by $index"><comp data=x></comp></div>
+  </div>
+
+  <div ng-if="!useBaseCss && !useBootstrap">
+    <div ng-repeat="x in components track by $index"><comp data=x></comp></div>
+  </div>
+
+  <div ng-if="useBootstrap">
+    <div ng-repeat="x in components track by $index"><boot-comp data=x></boot-comp></div>
+  </div>
+
 </body> 
 </html>
